@@ -1,11 +1,17 @@
 (function() {
     'use strict';
 
+    var mongoose = require('../mongoose');
     var Q = require('q');
 
     var PromisesModule = function(Model) {
     	var self = this;
         if (Model === undefined) {
+            return false;
+        }
+
+        // Check if the user uses mongoose in first place
+        if (mongoose === undefined || mongoose === false) {
             return false;
         }
 

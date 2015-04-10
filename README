@@ -8,6 +8,7 @@ Methods :
 	- Specify the model that will be used to query the database
 
 	-> Returns false on undefined model
+	-> Returns false if mongoose is not a project dependency
 	-> Library instance on valid model
 
 	-> Basic usage :
