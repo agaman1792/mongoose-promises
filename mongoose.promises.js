@@ -9,6 +9,8 @@
             return false;
         }
 
+        self._VERSION = "0.0.2";
+
         self.Get = function(filter, numberOf) {
             filter = filter || {};
 
