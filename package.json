@@ -1,6 +1,6 @@
 {
   "name": "mongoose-promises",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Mongoose tiny fetcher library built around promises (uses q)",
   "main": "mongoose.promises.js",
   "scripts": {
