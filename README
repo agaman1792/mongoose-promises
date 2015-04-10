@@ -1,0 +1,176 @@
+This tiny fetcher library will help you write your code in a more semantic fashion :
+
+Methods : 
+
+========================  Constructor  ==============================
+
+-> Constructor = function(model)
+	- Specify the model that will be used to query the database
+
+	-> Returns false on undefined model
+	-> Library instance on valid model
+
+	-> Basic usage :
+	var MongooseModel = require(<mongoose model path>);
+	// Notice that the constructor is called immediatly
+	var MongooseModelPromises = require("mongoose.promises.js")(MongooseModel);
+
+========================  Get method  ==============================
+
+-> Get = function (filter, numberOf)
+	- Gets one or more documents from a specified model
+
+	=> Returns : promise
+
+	=> Callback parameters
+		=> Success : function(data)
+			- data : object, if numberOf not specified or numberOf = 1
+					 array, if numberOf present and > 1
+		=> Failure : function(message)
+			- message : {
+				status: "failed",
+				message: the error message
+			}
+	
+	-> If filter is not specified, it will return all of the documents
+	MongooseModelPromises.Get()
+	.then(function(data) {
+	    res.status(200).send(data);
+	}).fail(function(message) {
+	    res.status(400).send(message);
+	});
+
+	-> Specifying filter only will return one value
+
+	var filter = {
+		_id: req.params.id
+	};
+
+	MongooseModelPromises.Get(filter)
+	.then(function(data) {
+	    res.status(200).send(data);
+	}).fail(function(message) {
+	    res.status(400).send(message);
+	});
+
+	-> Specifying filter and limit
+
+	var filter = {
+		_id: req.params.id
+	};
+
+	var limit = 20;
+
+	MongooseModelPromises.Get(filter, limit)
+	.then(function(data) {
+	    res.status(200).send(data);
+	}).fail(function(message) {
+	    res.status(400).send(message);
+	});
+
+========================  Update method  ==============================
+
+-> Update = function(filter, update)
+	- Updates a document based on "filter" parameter with keys from the "update" parameter
+
+	=> Returns : promise
+
+	=> Callback parameters
+		=> Success : function(message)
+			- message : {
+				status: "ok",
+				old: the document fields before update (all fields)
+				new: the document updated fields (the update field provided)
+			}
+		=> Failure : function(message)
+			- message : {
+				status: "failed",
+				message: the error message
+			}
+
+	-> If filter or update objects are undefined (unspecified), false or plain objects {}, the promise will be rejected
+		(it will fail)
+	Note : internally uses mongoose#model.findOneAndUpdate method
+	- Basic usage :
+	var filter = {
+		_id: req.params.id
+	};
+
+	var update = {
+		name: "Garfield"
+	};
+
+	MongooseModelPromises.Update(filter, update)
+    .then(function(message) {
+        res.status(200).send(message);
+    }).fail(function(message) {
+        res.status(400).send(message);
+    });
+
+========================  Save method  ==============================
+
+-> Save = function(attrs)
+	- Saves a new document based on its attributes
+
+	=> Returns : promise
+
+	=> Callback parameters
+		=> Success : function(message)
+			- message : {
+				status: "ok",
+				message: "addition successfull",
+				data: the new added document's fields
+			}
+		=> Failure : function(message)
+			- message : {
+				status: "failed",
+				message: the error message
+			}
+
+	-> If attrs object is undefined (unspecified), false or plain object {}, the promise will be rejected
+		(it will fail)
+	- Basic usage :
+	var attrs = {
+		name: "Dan The Man"
+	};
+
+	MongooseModelPromises.Save(attrs)
+    .then(function(message) {
+        res.status(200).send(message);
+    }).fail(function(message) {
+        res.status(400).send(message);
+    });
+
+========================  Remove method  ==============================
+
+-> Remove = function(filter)
+	- Removes an element from the list
+
+	=> Returns : promise
+
+	=> Callback parameters
+		=> Success : function(message)
+			- message : {
+				status: "ok",
+				removed: the removed document's fields
+			}
+		=> Failure : function(message)
+			- message : {
+				status: "failed",
+				message: the error message
+			}
+
+	-> If attrs object is undefined (unspecified), false or plain object {}, the promise will be rejected
+		(it will fail)
+	- Basic usage :
+
+	var filter = {
+		_id: 123
+	};
+
+	TemplateModelPromises.Remove(filter)
+    .then(function(message) {
+        res.status(200).send(message);
+    }).fail(function(message) {
+        res.status(400).send(message);
+    });
