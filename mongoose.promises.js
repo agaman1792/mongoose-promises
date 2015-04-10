@@ -15,7 +15,7 @@
             return false;
         }
 
-        self._VERSION = "0.0.2";
+        self._VERSION = "0.0.3";
 
         self.Get = function(filter, numberOf) {
             filter = filter || {};
