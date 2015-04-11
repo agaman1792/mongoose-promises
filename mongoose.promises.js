@@ -5,7 +5,7 @@
     var Q = require('q');
 
     var PromisesModule = function(Model) {
-    	var self = this;
+        var self = this;
         if (Model === undefined) {
             return false;
         }
@@ -15,8 +15,10 @@
             return false;
         }
 
-        self._VERSION = "0.0.3";
+        // ============= Version definition
+        self._VERSION = "0.0.6";
 
+        // ============= Get
         self.Get = function(filter, numberOf) {
             filter = filter || {};
 
@@ -39,7 +41,7 @@
                 if (Object.keys(data).length === 0) {
                     return deferred.reject({
                         status: "failed",
-                        message: "Empty object"
+                        message: "Object not found or empty"
                     });
                 }
 
@@ -49,6 +51,29 @@
             return deferred.promise;
         };
 
+        // ============= Count
+        self.Count = function(filter) {
+            var deferred = Q.defer();
+            filter = filter || {};
+
+            Model.Count(filter, function(err, count){
+                if (err) {
+                    return deferred.reject({
+                        status: "failed",
+                        message: err.message
+                    });
+                }
+
+                deferred.resolve({
+                    status: "ok",
+                    count: count
+                });
+            });
+
+            return deferred.promise;
+        };
+
+        // ============= Update
         self.Update = function(filter, update) {
             filter = filter || {};
             update = update || {};
@@ -74,12 +99,13 @@
             return deferred.promise;
         };
 
+        // ============= Save
         self.Save = function(attrs) {
             var deferred = Q.defer();
             attrs = attrs || {};
 
             var item = new Model(attrs);
-            Model.save(function(err) {
+            item.save(function(err) {
                 if (err) {
                     return deferred.reject({
                         status: "failed",
@@ -97,6 +123,34 @@
             return deferred.promise;
         };
 
+        self.SaveBulk = function(documents) {
+            var deferred = Q.defer();
+
+            if (documents === undefined) {
+                return deferred.reject({
+                    status: "failed",
+                    message: "Documents not specified"
+                });
+            }
+
+            Model.collection.insert(documents, function(err, docs){
+                if (err) {
+                    return deferred.reject({
+                        result: "failed",
+                        message: err.message
+                    });
+                }
+
+                deferred.resolve({
+                    result: "ok",
+                    added: docs.ops.length
+                });
+            });
+
+            return deferred.promise;
+        };
+
+        // ============= Remove
         self.Remove = function(filter) {
             var deferred = Q.defer();
             
@@ -118,7 +172,9 @@
         };
     };
 
+    // ============= Export
     module.exports = function(module) {
-    	return new PromisesModule(module);
+        return new PromisesModule(module);
     };
+
 }());
